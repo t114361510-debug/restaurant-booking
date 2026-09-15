@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>吳媽媽祥豐餐廳 · 線上點餐與預約訂位</title>
+  <meta name="description" content="吳媽媽祥豐餐廳線上點餐與預約訂位，精選家常好味，為您保留專屬座位。" />
+  <meta name="theme-color" content="#f7f3ea" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: oklch(0.98 0.008 85);
+      --foreground: oklch(0.26 0.02 45);
+      --card: oklch(0.995 0.005 90);
+      --primary: oklch(0.48 0.09 40);
+      --primary-foreground: oklch(0.98 0.01 85);
+      --muted: oklch(0.95 0.012 82);
+      --muted-foreground: oklch(0.52 0.03 50);
+      --accent: oklch(0.9 0.03 70);
+      --border: oklch(0.89 0.015 75);
+      --destructive: oklch(0.55 0.2 27);
+      --radius: 0.75rem;
+      --font-sans: "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+      --font-serif: "Noto Serif TC", ui-serif, Georgia, serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--background);
+      color: var(--foreground);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 6rem;
+    }
+
+    .serif { font-family: var(--font-serif); }
+
+    img { display: block; max-width: 100%; }
+
+    /* ---------- Header ---------- */
+    .hero {
+      position: relative;
+      min-height: 320px;
+      display: flex;
+      align-items: flex-end;
+      color: #fff;
+      overflow: hidden;
+      background: linear-gradient(120deg, oklch(0.42 0.08 45), oklch(0.34 0.05 40));
+    }
+    .hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(30, 20, 12, 0.85), rgba(30, 20, 12, 0.15));
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 48rem;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2rem 1.25rem 2.25rem;
+    }
+    .hero .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.15;
+    }
+    .hero p { margin-top: 0.6rem; font-size: 0.95rem; opacity: 0.9; max-width: 30rem; }
+
+    /* ---------- Layout ---------- */
+    main { max-width: 48rem; margin: 0 auto; padding: 0 1.25rem; }
+
+    section { padding-top: 3rem; scroll-margin-top: 1rem; }
+
+    .section-head { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .section-head .dot {
+      flex-shrink: 0;
+      width: 2.25rem; height: 2.25rem;
+      border-radius: 999px;
+      background: color-mix(in oklch, var(--primary) 12%, transparent);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+    .section-head h2 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; }
+    .section-head .sub { font-size: 0.85rem; color: var(--muted-foreground); }
+
+    /* ---------- Menu ---------- */
+    .menu-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .menu-item {
+      display: flex;
+      gap: 0.85rem;
+      align-items: stretch;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .menu-item:hover { box-shadow: 0 6px 20px rgba(60, 40, 20, 0.06); border-color: color-mix(in oklch, var(--primary) 30%, var(--border)); }
+    .menu-thumb {
+      flex-shrink: 0;
+      width: 72px; height: 72px;
+      border-radius: calc(var(--radius) - 0.25rem);
+      object-fit: cover;
+      background: var(--muted);
+    }
+    .menu-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+    .menu-body .name { font-family: var(--font-serif); font-weight: 600; font-size: 1.02rem; line-height: 1.3; }
+    .menu-body .desc { font-size: 0.8rem; color: var(--muted-foreground); margin-top: 0.15rem; }
+    .menu-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .menu-foot .price { font-weight: 600; color: var(--primary); font-size: 0.9rem; white-space: nowrap; }
+
+    /* ---------- Stepper ---------- */
+    .stepper { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+    .stepper button {
+      width: 2rem; height: 2rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--foreground);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+      line-height: 1;
+    }
+    .stepper button:hover:not(:disabled) { background: var(--muted); border-color: var(--primary); }
+    .stepper button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .stepper .qty { min-width: 1.4rem; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    /* ---------- Form ---------- */
+    .form-card {
+      background: color-mix(in oklch, var(--card) 60%, transparent);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 0.35rem);
+      padding: 1.35rem 1.15rem;
+    }
+    .field { margin-bottom: 1.1rem; }
+    .field:last-child { margin-bottom: 0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; }
+    input, select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--foreground);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) - 0.15rem);
+      padding: 0.6rem 0.75rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 18%, transparent);
+    }
+    input.invalid, select.invalid { border-color: var(--destructive); }
+    .error { color: var(--destructive); font-size: 0.75rem; margin-top: 0.3rem; min-height: 0.9rem; }
+
+    /* ---------- Sticky bar ---------- */
+    .bar {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 20;
+      border-top: 1px solid var(--border);
+      background: color-mix(in oklch, var(--background) 90%, transparent);
+      backdrop-filter: blur(10px);
+    }
+    .bar-inner {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0.7rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .bar .label { font-size: 0.72rem; color: var(--muted-foreground); }
+    .bar .total { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; }
+    .btn-primary {
+      flex-shrink: 0;
+      border: none;
+      cursor: pointer;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.8rem 1.6rem;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(80, 45, 20, 0.18);
+      transition: transform 0.12s, filter 0.15s;
+    }
+    .btn-primary:hover { filter: brightness(1.06); }
+    .btn-primary:active { transform: translateY(1px); }
+
+    /* ---------- Confirmation ---------- */
+    .confirm { max-width: 32rem; margin: 0 auto; padding: 4rem 1.25rem; text-align: center; }
+    .confirm .check {
+      width: 4rem; height: 4rem; margin: 0 auto;
+      border-radius: 999px;
+      background: color-mix(in oklch, var(--primary) 12%, transparent);
+      color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .confirm h2 { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; margin-top: 1.4rem; }
+    .confirm .lead { color: var(--muted-foreground); margin-top: 0.5rem; }
+    .summary {
+      margin-top: 2rem;
+      text-align: left;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      padding: 1.4rem;
+      font-size: 0.9rem;
+    }
+    .summary .row { display: flex; justify-content: space-between; padding: 0.3rem 0; }
+    .summary .row .k { color: var(--muted-foreground); }
+    .summary .row .v { font-weight: 500; }
+    .summary hr { border: none; border-top: 1px solid var(--border); margin: 0.7rem 0; }
+    .summary .grand { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 600; }
+    .summary .grand .v { color: var(--primary); }
+    .summary .empty { text-align: center; color: var(--muted-foreground); }
+    .link-btn {
+      margin-top: 2rem;
+      background: none; border: none; cursor: pointer;
+      color: var(--primary);
+      font-family: inherit; font-size: 0.9rem; font-weight: 500;
+      text-decoration: underline; text-underline-offset: 4px;
+    }
+
+    /* 貼在 .link-btn 的下方 */
+    .exit-btn {
+      margin-top: 0.8rem;
+      color: var(--muted-foreground);
+    }
+    .exit-btn:hover {
+      color: var(--foreground);
+    }
+
+    .hidden { display: none !important; }
+
+    @media (min-width: 640px) {
+      .hero h1 { font-size: 3rem; }
+      .menu-thumb { width: 92px; height: 92px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ============ App ============ -->
+  <div id="app">
+    <header class="hero">
+      <img src="restaurant-hero.png" alt="" onerror="this.style.display='none'" />
+      <div class="hero-inner">
+        <span class="badge">傳統家常 · 用心料理</span>
+        <h1>吳媽媽祥豐餐廳</h1>
+        <p>三代相傳的家常好味，線上輕鬆點餐，一併為您保留專屬座位。</p>
+      </div>
+    </header>
+
+    <main id="form-view">
+      <!-- 線上點餐 -->
+      <section id="menu">
+        <div class="section-head">
+          <span class="dot" aria-hidden="true">&#127860;</span>
+          <div>
+            <h2>線上點餐</h2>
+            <p class="sub">精選家常好味，選好份量一併預約。</p>
+          </div>
+        </div>
+        <ul class="menu-list" id="menu-list"></ul>
+      </section>
+
+      <!-- 預約訂位 -->
+      <section id="reservation">
+        <div class="section-head">
+          <span class="dot" aria-hidden="true">&#128197;</span>
+          <div>
+            <h2>預約訂位</h2>
+            <p class="sub">填寫以下資訊，為您保留專屬座位。</p>
+          </div>
+        </div>
+
+        <form class="form-card" id="reservation-form" novalidate>
+          <div class="field">
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name" placeholder="請輸入您的姓名" autocomplete="name" />
+            <p class="error" data-error-for="name"></p>
+          </div>
+
+          <div class="field">
+            <label for="phone">手機號碼</label>
+            <input type="tel" id="phone" name="phone" placeholder="09xx-xxx-xxx" autocomplete="tel" inputmode="numeric" />
+            <p class="error" data-error-for="phone"></p>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label for="date">預約日期</label>
+              <input type="date" id="date" name="date" />
+              <p class="error" data-error-for="date"></p>
+            </div>
+            <div class="field">
+              <label for="time">預約時間</label>
+              <select id="time" name="time">
+                <option value="">請選擇時段</option>
+              </select>
+              <p class="error" data-error-for="time"></p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="guests">用餐人數</label>
+            <select id="guests" name="guests"></select>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!--    認畫面 -->
+    <div id="confirm-view" class="confirm hidden">
+      <div class="check" aria-hidden="true">&#10003;</div>
+      <h2>預約已送出</h2>
+      <p class="lead" id="confirm-lead"></p>
+      <div class="summary" id="confirm-summary"></div>
+      <button type="button" class="link-btn" id="reset-btn">再預約一筆</button>
+      <br />
+      <button type="button" class="link-btn exit-btn" id="exit-btn">離開</button>
+    </div>
+
+    <!-- 底部固定結帳列 -->
+    <div class="bar" id="bar">
+      <div class="bar-inner">
+        <div>
+          <p class="label" id="bar-count">尚未加點餐點</p>
+          <p class="total"><span>NT$ </span><span id="bar-total">0</span></p>
+        </div>
+        <button type="submit" form="reservation-form" class="btn-primary">確認預約與點餐</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxscaQIjaTtgeAnn65qJYakp14qh42W9uyEAAPPE7k39NXkI2WTuOAlUul7qABu1UNF/exec";
+
+    // ---------- 資料 ----------
+    var menu = [
+      { id: "sanbeiji", name: "招牌三杯雞", description: "麻油、醬油、米酒三味交融，佐九層塔快炒，香氣撲鼻。", price: 280, image: "dish-sanbeiji.png" },
+      { id: "fish", name: "古法清蒸鮮魚", description: "每日現撈鮮魚，薑絲蔥段清蒸，鮮甜原味。", price: 420, image: "dish-fish.png" },
+      { id: "mapo", name: "祥豐麻婆豆腐", description: "嫩豆腐燴入麻辣肉燥，微麻回甘，最下飯的一道。", price: 180, image: "dish-mapo.png" },
+      { id: "veggie", name: "蒜香炒時蔬", description: "當季新鮮綠葉蔬菜，大火爆蒜清炒，爽脆可口。", price: 150, image: "dish-veggie.png" },
+      { id: "soup", name: "香菇雞湯", description: "土雞燉煮數小時，加入乾香菇提味，湯頭清甜溫潤。", price: 220, image: "dish-soup.png" }
+    ];
+
+    var timeSlots = ["11:30", "12:00", "12:30", "13:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"];
+    var quantities = {};
+
+    // ---------- 建立菜單 ----------
+    var menuList = document.getElementById("menu-list");
+    menu.forEach(function (item) {
+      quantities[item.id] = 0;
+      var li = document.createElement("li");
+      li.className = "menu-item";
+      li.innerHTML =
+        '<img class="menu-thumb" src="' + item.image + '" alt="' + item.name + '" onerror="this.style.visibility=\'hidden\'" />' +
+        '<div class="menu-main">' +
+          '<div class="menu-body">' +
+            '<p class="name">' + item.name + '</p>' +
+            '<p class="desc">' + item.description + '</p>' +
+          '</div>' +
+          '<div class="menu-foot">' +
+            '<span class="price">NT$ ' + item.price + '</span>' +
+            '<div class="stepper">' +
+              '<button type="button" aria-label="減少 ' + item.name + '" data-act="dec" data-id="' + item.id + '" disabled>&minus;</button>' +
+              '<span class="qty" id="qty-' + item.id + '">0</span>' +
+              '<button type="button" aria-label="增加 ' + item.name + '" data-act="inc" data-id="' + item.id + '">&plus;</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      menuList.appendChild(li);
+    });
+
+    menuList.addEventListener("click", function (e) {
+      var btn = e.target.closest("button[data-id]");
+      if (!btn) return;
+      var id = btn.getAttribute("data-id");
+      var delta = btn.getAttribute("data-act") === "inc" ? 1 : -1;
+      quantities[id] = Math.max(0, quantities[id] + delta);
+      document.getElementById("qty-" + id).textContent = quantities[id];
+      var decBtn = menuList.querySelector('button[data-act="dec"][data-id="' + id + '"]');
+      decBtn.disabled = quantities[id] === 0;
+      updateTotals();
+    });
+
+    // ---------- 下拉選單資料 ----------
+    var timeSelect = document.getElementById("time");
+    timeSlots.forEach(function (t) {
+      var opt = document.createElement("option");
+      opt.value = t; opt.textContent = t;
+      timeSelect.appendChild(opt);
+    });
+
+    var guestsSelect = document.getElementById("guests");
+    for (var g = 1; g <= 10; g++) {
+      var opt = document.createElement("option");
+      opt.value = String(g); opt.textContent = g + " 位";
+      if (g === 2) opt.selected = true;
+      guestsSelect.appendChild(opt);
+    }
+
+    var dateInput = document.getElementById("date");
+    dateInput.min = new Date().toISOString().split("T")[0];
+
+    // ---------- 計算總金額 ----------
+    function orderedItems() {
+      return menu
+        .map(function (item) { return { item: item, qty: quantities[item.id] }; })
+        .filter(function (e) { return e.qty > 0; });
+    }
+    function calcTotal() {
+      return orderedItems().reduce(function (sum, e) { return sum + e.item.price * e.qty; }, 0);
+    }
+    function updateTotals() {
+      var items = orderedItems();
+      var count = items.reduce(function (n, e) { return n + e.qty; }, 0);
+      document.getElementById("bar-total").textContent = calcTotal();
+      document.getElementById("bar-count").textContent =
+        count > 0 ? "已選 " + count + " 份餐點" : "尚未加點餐點";
+    }
+
+    // ---------- 表單驗證 ----------
+    function setError(field, msg) {
+      var input = document.getElementById(field);
+      var errEl = document.querySelector('[data-error-for="' + field + '"]');
+      if (msg) {
+        input.classList.add("invalid");
+        errEl.textContent = msg;
+      } else {
+        input.classList.remove("invalid");
+        errEl.textContent = "";
+      }
+    }
+
+    function validate() {
+      var ok = true;
+      var name = document.getElementById("name").value.trim();
+      var phone = document.getElementById("phone").value.trim();
+      var date = document.getElementById("date").value;
+      var time = document.getElementById("time").value;
+
+      if (!name) { setError("name", "請輸入姓名"); ok = false; } else setError("name", "");
+      if (!phone) { setError("phone", "請輸入手機號碼"); ok = false; }
+      else if (!/^09\d{2}[-\s]?\d{3}[-\s]?\d{3}$/.test(phone)) { setError("phone", "請輸入正確的手機號碼格式"); ok = false; }
+      else setError("phone", "");
+
+      if (!date) { setError("date", "請選擇預約日期"); ok = false; } else setError("date", "");
+      if (!time) { setError("time", "請選擇預約時間"); ok = false; } else setError("time", "");
+
+      return ok;
+    }
+
+    // ---------- 送出 ----------
+    var form = document.getElementById("reservation-form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!validate()) {
+        document.getElementById("reservation").scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+
+      var itemsList = orderedItems().map(function(e) {
+        return e.item.name + " x " + e.qty;
+      }).join(", ");
+
+      var bookingData = {
+        name: document.getElementById("name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        date: document.getElementById("date").value,
+        time: document.getElementById("time").value,
+        people: document.getElementById("guests").value,
+        items: itemsList || "僅預約（未點餐）"
+      };
+
+      fetch(GAS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(bookingData)
+      });
+
+      showConfirmation();
+    });
+
+    // ---------- 切換預約完成畫面 ----------
+    function showConfirmation() {
+      var name = document.getElementById("name").value.trim();
+      var date = document.getElementById("date").value;
+      var time = document.getElementById("time").value;
+      var guests = document.getElementById("guests").value;
+      var items = orderedItems();
+      var total = calcTotal();
+
+      document.getElementById("confirm-lead").textContent =
+        "感謝 " + name + " 的預約，我們已收到您的訂位與點餐資訊，將盡快與您確認。";
+
+      var html =
+        '<div class="row"><span class="k">預約日期</span><span class="v">' + date + '</span></div>' +
+        '<div class="row"><span class="k">預約時間</span><span class="v">' + time + '</span></div>' +
+        '<div class="row"><span class="k">用餐人數</span><span class="v">' + guests + ' 位</span></div>';
+
+      if (items.length > 0) {
+        html += "<hr />";
+        items.forEach(function (e) {
+          html += '<div class="row"><span class="k">' + e.item.name + " × " + e.qty +
+            '</span><span class="v">NT$ ' + (e.item.price * e.qty) + "</span></div>";
+        });
+        html += '<hr /><div class="row grand"><span class="k">預估總金額</span><span class="v">NT$ ' + total + "</span></div>";
+      } else {
+        html += '<hr /><p class="empty">（本次僅預約訂位，未加點餐點）</p>';
+      }
+      document.getElementById("confirm-summary").innerHTML = html;
+
+      document.getElementById("form-view").classList.add("hidden");
+      document.getElementById("bar").classList.add("hidden");
+      document.querySelector(".hero").classList.add("hidden");
+      document.getElementById("confirm-view").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ---------- 重置 ----------
+    document.getElementById("reset-btn").addEventListener("click", function () {
+      menu.forEach(function (item) {
+        quantities[item.id] = 0;
+        document.getElementById("qty-" + item.id).textContent = "0";
+        menuList.querySelector('button[data-act="dec"][data-id="' + item.id + '"]').disabled = true;
+      });
+      form.reset();
+      guestsSelect.value = "2";
+      ["name", "phone", "date", "time"].forEach(function (f) { setError(f, ""); });
+      updateTotals();
+
+      document.getElementById("confirm-view").classList.add("hidden");
+      document.getElementById("form-view").classList.remove("hidden");
+      document.getElementById("bar").classList.remove("hidden");
+      document.querySelector(".hero").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    // ---------- 離開 (貼在這裡) ----------
+    document.getElementById("exit-btn").addEventListener("click", function () {
+      window.close();
+      setTimeout(function () {
+        alert("感謝您的光臨，期待再次為您服務！您可以直接關閉此頁面。");
+      }, 150);
+    });
+
+    updateTotals();
+  </script>
+</body>
+</html>
